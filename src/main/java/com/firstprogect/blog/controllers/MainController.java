@@ -10,6 +10,7 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("title", "Home page");
+        model.addAttribute("img1", "https://www.youtube.com/watch?v=1Ne1hqOXKKI");
         return "home";
     }
 
