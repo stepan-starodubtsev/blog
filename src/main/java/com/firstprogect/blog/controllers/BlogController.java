@@ -41,13 +41,42 @@ public class BlogController {
 
     @GetMapping("/blog/{id}")
     public String blogDetails(@PathVariable(value = "id") long id, Model model) {
-        if (postRepository.existsById(id)){
+        if (postRepository.existsById(id)) {
             Optional<Post> post = postRepository.findById(id);
             List<Post> result = new ArrayList<>();
             post.ifPresent(result::add);
             model.addAttribute("post", result);
             return "blog-details";
         }
+        return "redirect:/blog";
+    }
+
+    @GetMapping("/blog/{id}/edit")
+    public String postEdit(@PathVariable(value = "id") long id, Model model) {
+        if (postRepository.existsById(id)) {
+            Optional<Post> post = postRepository.findById(id);
+            List<Post> result = new ArrayList<>();
+            post.ifPresent(result::add);
+            model.addAttribute("post", result);
+            return "post-edit";
+        }
+        return "redirect:/blog/{id}";
+    }
+
+    @PostMapping("/blog/{id}/edit")
+    public String blogPostUpdate(@PathVariable(value = "id") long id, @RequestParam String title, @RequestParam String anons
+            , @RequestParam String full_text, Model model) {
+        Post post = postRepository.findById(id).orElseThrow();
+        post.setTitle(title);
+        post.setAnons(anons);
+        post.setFullText(full_text);
+        postRepository.save(post);
+        return "redirect:/blog";
+    }
+    @PostMapping("/blog/{id}/delete")
+    public String blogPostDelete(@PathVariable(value = "id") long id, Model model) {
+        Post post = postRepository.findById(id).orElseThrow();
+        postRepository.delete(post);
         return "redirect:/blog";
     }
 }
